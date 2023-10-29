@@ -8,16 +8,19 @@ const Url=require("./models/urls");
 const dbconnect=require("./dbconnect");
 const db=dbconnect();
 
+const corsOptions = {
+    origin: ["https://uurls.onrender.com","http://localhost:5173"] // frontend URI (ReactJS)
+}
 
 const app=express();
 
 app.use(express.urlencoded({extended:true}));
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 //Todo: redirect to "uurls.com.np frontend"
 app.get("/",(req,res)=>{
-res.redirect("/links");
+res.redirect("https://uurls.onrender.com");
 });
 
 app.get("/links",async(req,res)=>{
@@ -66,7 +69,7 @@ app.get("/:shorturl",async (req,res)=>{
 
 app.post("/",async(req,res)=>{
 try{
-    console.log("shorturl?? ",req.body.shorturl);
+
     if(!(await Url.findOne({shorturl:req.body?.shorturl})))
     {
     const newurl= await Url.create({
